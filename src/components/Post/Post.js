@@ -20,30 +20,26 @@ export default class Post extends Component {
       showMasterMenu: false
     };
 
-    this.hideEdit = this.hideEdit.bind( this );
-    this.showEdit = this.showEdit.bind( this );
-    this.toggleMasterMenu = this.toggleMasterMenu.bind( this );
-    this.hideMasterMenu = this.hideMasterMenu.bind( this );
   }
 
   // This puts the post into EDIT mode when the EDIT button is clicked from the drop-down
-  showEdit() {
+  showEdit = () => {
     this.setState({ editing: true, showMasterMenu: false });
   }
 
   // This puts the post back into normal viewing mode when the CANCEL button is clicked
   // This method is passed down to the <Edit /> component via props
-  hideEdit() {
+  hideEdit = () => {
     this.setState({ editing: false });
   }
 
   // This toggles the drop-down when the three dots in the top right corner of a post are clicked
-  toggleMasterMenu() {
+  toggleMasterMenu = () => {
     this.setState({ showMasterMenu: !this.state.showMasterMenu });
   }
 
   // This hides the drop-down when the post is clicked anywhere
-  hideMasterMenu() {
+  hideMasterMenu = () => {
     if ( this.state.showMasterMenu === true ) {
       this.setState({ showMasterMenu: false });
     }
@@ -54,6 +50,8 @@ export default class Post extends Component {
       // const editing = this.state.editing
       // const showMasterMenu = this.state.showMasterMenu
     const { editing, showMasterMenu } = this.state;
+    const { text, date, id, updatePostFn } = this.props;
+    const { deletePostFn } = this.props; 
 
     return (
       // Main body of post
@@ -66,7 +64,7 @@ export default class Post extends Component {
           {/* Drop-down menu. Remember that the "showMasterMenu" variable has been destructured off of this.state */}
           <div className="Post__master-menu" style={ { display: showMasterMenu ? 'flex' : 'none' } }>
             <span onClick={ this.showEdit }>Edit</span>
-            <span>Delete</span>
+            <span onClick={ () => deletePostFn( id ) }>Delete</span>
           </div>
         </div>
 
@@ -79,7 +77,7 @@ export default class Post extends Component {
           <span className="Post__name">DevMountain</span>
           <span className="Post__handle">@DevMountain</span>
 
-          <span className="Post__date">- POST DATE GOES HERE</span>
+          <span className="Post__date">{ date }</span>
         </div>
 
         {/* This is where the text goes. Notice the turnary statement. The turnary statement decides to display either the text OR the editor view
@@ -95,10 +93,12 @@ export default class Post extends Component {
             // This has been pulled off of this.state via destructuring
             editing
             ?
-              <Edit text=""
-                    hideEdit={ this.hideEdit } />
+              <Edit text={ text }
+                    id={ id }
+                    hideEdit={ this.hideEdit } 
+                    updatePostFn={ updatePostFn }/>
             :
-              <span className="Post__text">POST TEXT GOES HERE</span>
+              <span className="Post__text">{ text }</span>
           }
         </div>
 
